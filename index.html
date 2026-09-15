@@ -1,106 +1,734 @@
-import re
-import streamlit as st
+<<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-# Configuração da página
-st.set_page_config(
-    page_title="AgroSeguro - Proteção no Campo",
-    page_icon="🌾",
-    layout="centered",
-)
+    <title>AgroSeguro | Segurança Digital no Campo</title>
 
-# Título do Aplicativo
-st.title("🌾 AgroSeguro")
-st.subheader("Ferramenta de Prevenção a Golpes no Meio Rural")
-st.markdown(
-    "Verifique se dados de contatos, chaves Pix ou links possuem indícios de fraude antes de fechar um negócio."
-)
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-st.divider()
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            background: #f4f7f5;
+            color: #26332a;
+            line-height: 1.6;
+        }
 
-# Menu de opções
-opcao = st.sidebar.selectbox(
-    "O que você deseja verificar?",
-    [
-        "Verificar Chave Pix",
-        "Verificar Link / Site",
-        "Dicas de Segurança",
-        "Reportar Golpe",
-    ],
-)
+        header {
+            background: linear-gradient(135deg, #1b5e20, #388e3c);
+            color: white;
+            padding: 35px 20px;
+            text-align: center;
+        }
 
-# Base de dados simulada de chaves e números suspeitos
-SUSPECT_DATABASE = {
-    "pix_suspeitos": ["compras@insumos-baratos.com", "00011122233"],
-    "links_suspeitos": [
-        "http://leilao-gado-barato.com",
-        "http://oferta-adubo-desconto.site",
-    ],
+        header h1 {
+            margin: 0;
+            font-size: 38px;
+        }
+
+        header p {
+            max-width: 750px;
+            margin: 10px auto 0;
+            font-size: 18px;
+        }
+
+        nav {
+            background: #124116;
+            padding: 12px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .hero {
+            background: white;
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+
+        .hero h2 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+
+        .alerta {
+            background: #fff3cd;
+            border-left: 6px solid #f0ad00;
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .alerta strong {
+            color: #7a5600;
+        }
+
+        .section-title {
+            color: #1b5e20;
+            margin-top: 40px;
+            margin-bottom: 18px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+            border-top: 4px solid #43a047;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #2e7d32;
+        }
+
+        .card p {
+            margin-bottom: 0;
+        }
+
+        .verificador {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-top: 30px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #bbb;
+            border-radius: 7px;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 7px;
+            background: #2e7d32;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1b5e20;
+        }
+
+        #resultado {
+            margin-top: 20px;
+        }
+
+        .resultado {
+            padding: 18px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .seguro {
+            background: #e8f5e9;
+            color: #1b5e20;
+            border-left: 5px solid #2e7d32;
+        }
+
+        .perigo {
+            background: #ffebee;
+            color: #b71c1c;
+            border-left: 5px solid #d32f2f;
+        }
+
+        .atencao {
+            background: #fff8e1;
+            color: #8a6500;
+            border-left: 5px solid #f9a825;
+        }
+
+        .checklist {
+            background: #e8f5e9;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .checklist li {
+            margin-bottom: 10px;
+        }
+
+        .fake-news {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 6px solid #1565c0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        .passo {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 18px;
+        }
+
+        .numero {
+            min-width: 38px;
+            height: 38px;
+            background: #2e7d32;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .quiz {
+            background: #263238;
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 30px;
+        }
+
+        .quiz h2 {
+            color: #a5d6a7;
+        }
+
+        .quiz button {
+            background: #43a047;
+            margin-top: 10px;
+        }
+
+        footer {
+            margin-top: 50px;
+            background: #17351b;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        footer p {
+            max-width: 800px;
+            margin: 8px auto;
+            color: #d9e5da;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 30px;
+            }
+
+            nav a {
+                display: inline-block;
+                margin: 5px;
+            }
+
+            .hero,
+            .verificador,
+            .card,
+            .fake-news {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🌾 AgroSeguro</h1>
+    <p>
+        Segurança digital no campo contra golpes, fraudes,
+        fake news e tentativas de roubo de dados.
+    </p>
+</header>
+
+<nav>
+    <a href="#verificador">🔎 Verificar</a>
+    <a href="#golpes">🚨 Golpes</a>
+    <a href="#fakenews">📰 Fake News</a>
+    <a href="#checklist">✅ Checklist</a>
+    <a href="#quiz">🎓 Aprenda</a>
+</nav>
+
+<main class="container">
+
+    <section class="hero">
+
+        <h2>🛡️ Proteja sua propriedade e seu negócio</h2>
+
+        <p>
+            A tecnologia trouxe muitas facilidades para o produtor rural:
+            pagamentos digitais, WhatsApp, marketplaces, leilões online
+            e negociações à distância.
+        </p>
+
+        <p>
+            Mas também aumentaram os riscos de golpes digitais.
+            O AgroSeguro foi criado para ajudar você a reconhecer sinais
+            de fraude antes de perder dinheiro ou compartilhar informações.
+        </p>
+
+        <div class="alerta">
+            <strong>⚠️ Regra de ouro:</strong>
+            se alguém estiver pressionando você para pagar imediatamente,
+            fornecer um código, clicar em um link ou enviar documentos,
+            pare e confirme a informação por outro canal.
+        </div>
+
+    </section>
+
+    <!-- VERIFICADOR -->
+
+    <section id="verificador" class="verificador">
+
+        <h2 class="section-title">🔎 Verificador de Segurança</h2>
+
+        <p>
+            Use esta ferramenta como uma primeira análise.
+            Ela não substitui uma confirmação oficial ou uma investigação.
+        </p>
+
+        <label for="tipo">O que você deseja analisar?</label>
+
+        <select id="tipo">
+            <option value="pix">Chave Pix</option>
+            <option value="telefone">Número de telefone</option>
+            <option value="link">Link de site ou leilão</option>
+            <option value="mensagem">Mensagem recebida</option>
+            <option value="noticia">Notícia ou informação</option>
+        </select>
+
+        <label for="dados">Digite ou cole a informação:</label>
+
+        <input
+            type="text"
+            id="dados"
+            placeholder="Cole aqui a chave, telefone, link ou mensagem..."
+        >
+
+        <button onclick="verificarGolpe()">
+            🔍 Fazer análise
+        </button>
+
+        <div id="resultado"></div>
+
+    </section>
+
+    <!-- GOLPES -->
+
+    <h2 id="golpes" class="section-title">
+        🚨 Golpes comuns contra produtores rurais
+    </h2>
+
+    <section class="cards">
+
+        <div class="card">
+            <h3>💰 Falso comprador</h3>
+            <p>
+                A pessoa demonstra interesse na produção, oferece um preço
+                muito acima do mercado e tenta acelerar o pagamento ou
+                retirada da mercadoria.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>🚜 Falso vendedor</h3>
+            <p>
+                Anúncios de máquinas, tratores ou equipamentos com preços
+                muito abaixo do mercado podem ser usados para atrair vítimas.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>🏷️ Falso leilão</h3>
+            <p>
+                Sites falsos podem copiar identidade visual de empresas
+                conhecidas e solicitar depósitos ou Pix para liberar
+                supostos veículos e máquinas.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>📱 WhatsApp clonado</h3>
+            <p>
+                Criminosos podem se passar por familiares, funcionários,
+                fornecedores ou parceiros comerciais e pedir dinheiro.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>🏦 Falso funcionário do banco</h3>
+            <p>
+                Desconfie de quem pede senha, código de segurança,
+                instalação de aplicativo ou transferência para
+                "conta segura".
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>📄 Roubo de documentos</h3>
+            <p>
+                CPF, RG, CNH, contratos e documentos da propriedade podem
+                ser usados indevidamente. Evite enviá-los para desconhecidos.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>🌱 Falso benefício rural</h3>
+            <p>
+                Mensagens prometendo crédito, benefício, financiamento,
+                máquinas ou programas governamentais podem ser utilizadas
+                para coletar dados pessoais.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>📦 Falso frete</h3>
+            <p>
+                O golpista informa que existe uma taxa inesperada para
+                liberar uma carga, equipamento ou mercadoria e exige
+                pagamento imediato.
+            </p>
+        </div>
+
+    </section>
+
+    <!-- FAKE NEWS -->
+
+    <h2 id="fakenews" class="section-title">
+        📰 Como identificar Fake News
+    </h2>
+
+    <section class="fake-news">
+
+        <p>
+            Informações falsas podem causar prejuízos financeiros e até
+            problemas na produção. Antes de compartilhar uma notícia,
+            verifique:
+        </p>
+
+        <div class="passo">
+            <div class="numero">1</div>
+            <div>
+                <strong>Quem publicou?</strong><br>
+                Verifique se existe uma pessoa, empresa ou instituição
+                responsável pela informação.
+            </div>
+        </div>
+
+        <div class="passo">
+            <div class="numero">2</div>
+            <div>
+                <strong>Existe fonte confiável?</strong><br>
+                Procure a mesma informação em canais oficiais ou veículos
+                jornalísticos confiáveis.
+            </div>
+        </div>
+
+        <div class="passo">
+            <div class="numero">3</div>
+            <div>
+                <strong>A notícia tenta causar medo ou urgência?</strong><br>
+                Frases como "compartilhe agora", "última chance" ou
+                "vão bloquear sua conta" merecem atenção.
+            </div>
+        </div>
+
+        <div class="passo">
+            <div class="numero">4</div>
+            <div>
+                <strong>Confira a data.</strong><br>
+                Uma notícia verdadeira pode estar sendo compartilhada
+                novamente anos depois e parecer atual.
+            </div>
+        </div>
+
+        <div class="passo">
+            <div class="numero">5</div>
+            <div>
+                <strong>Não confie apenas em uma imagem.</strong><br>
+                Fotos e vídeos podem ser antigos, editados ou apresentados
+                fora de contexto.
+            </div>
+        </div>
+
+        <div class="passo">
+            <div class="numero">6</div>
+            <div>
+                <strong>Não compartilhe antes de verificar.</strong><br>
+                Se você não sabe se é verdadeiro, não ajude a espalhar.
+            </div>
+        </div>
+
+    </section>
+
+    <!-- CHECKLIST -->
+
+    <h2 id="checklist" class="section-title">
+        ✅ Checklist antes de fazer um pagamento
+    </h2>
+
+    <section class="checklist">
+
+        <ul>
+            <li>☐ Confirme o nome do destinatário antes de concluir o Pix.</li>
+            <li>☐ Verifique se a pessoa realmente está negociando com você.</li>
+            <li>☐ Faça uma ligação usando um número que você já conhece.</li>
+            <li>☐ Desconfie de preços muito abaixo do mercado.</li>
+            <li>☐ Não faça pagamento apenas porque alguém está pressionando.</li>
+            <li>☐ Confira o endereço do site antes de inserir seus dados.</li>
+            <li>☐ Evite clicar em links recebidos de desconhecidos.</li>
+            <li>☐ Nunca forneça senhas ou códigos de autenticação.</li>
+            <li>☐ Guarde contratos, comprovantes e conversas importantes.</li>
+            <li>☐ Em caso de dúvida, interrompa a negociação e procure confirmação.</li>
+        </ul>
+
+    </section>
+
+    <!-- WHATSAPP -->
+
+    <h2 class="section-title">
+        📱 Segurança no WhatsApp
+    </h2>
+
+    <section class="cards">
+
+        <div class="card">
+            <h3>🔐 Ative a verificação em duas etapas</h3>
+            <p>
+                Adicione uma camada extra de proteção à sua conta.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>☎️ Confirme pedidos de dinheiro</h3>
+            <p>
+                Se um conhecido pedir dinheiro por mensagem,
+                ligue para ele usando outro meio.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>🔢 Nunca envie códigos</h3>
+            <p>
+                Códigos recebidos por SMS ou aplicativo podem permitir
+                que outra pessoa tente assumir sua conta.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>👨‍👩‍👧 Oriente sua família</h3>
+            <p>
+                Converse com familiares e funcionários sobre golpes
+                que estejam circulando.
+            </p>
+        </div>
+
+    </section>
+
+    <!-- QUIZ -->
+
+    <section id="quiz" class="quiz">
+
+        <h2>🎓 Teste seus conhecimentos</h2>
+
+        <p>
+            Você recebe uma mensagem de um fornecedor dizendo:
+            "Preciso que você faça o Pix agora. Meu telefone está com
+            problema e não posso falar."
+        </p>
+
+        <p>
+            O que você faria?
+        </p>
+
+        <button onclick="responderQuiz(false)">
+            💸 Fazer o Pix imediatamente
+        </button>
+
+        <button onclick="responderQuiz(true)">
+            ☎️ Confirmar a identidade por outro canal
+        </button>
+
+        <div id="quizResultado"></div>
+
+    </section>
+
+</main>
+
+<footer>
+
+    <h3>🌾 AgroSeguro</h3>
+
+    <p>
+        Informação e prevenção são ferramentas importantes para
+        aumentar a segurança digital no campo.
+    </p>
+
+    <p>
+        ⚠️ O AgroSeguro é uma ferramenta educativa. Uma consulta sem
+        alerta não significa que uma pessoa, telefone, Pix, site ou
+        informação seja necessariamente confiável.
+    </p>
+
+    <p>
+        Em caso de suspeita de fraude, procure seu banco, as autoridades
+        competentes e os canais oficiais relacionados à situação.
+    </p>
+
+</footer>
+
+<script>
+
+function verificarGolpe() {
+
+    const input = document
+        .getElementById("dados")
+        .value
+        .trim()
+        .toLowerCase();
+
+    const tipo = document.getElementById("tipo").value;
+    const resultado = document.getElementById("resultado");
+
+    if (input === "") {
+
+        resultado.innerHTML = `
+            <div class="resultado atencao">
+                ⚠️ Digite alguma informação para realizar a análise.
+            </div>
+        `;
+
+        return;
+    }
+
+    /*
+        IMPORTANTE:
+        Esta análise é educativa e NÃO consulta uma base real
+        de denúncias.
+    */
+
+    const palavrasSuspeitas = [
+        "urgente",
+        "pix agora",
+        "conta segura",
+        "senha",
+        "código",
+        "clique aqui",
+        "ganhou",
+        "prêmio",
+        "depósito",
+        "taxa",
+        "liberar",
+        "golpe",
+        "fraude"
+    ];
+
+    let suspeita = false;
+
+    palavrasSuspeitas.forEach(function(palavra) {
+
+        if (input.includes(palavra)) {
+            suspeita = true;
+        }
+
+    });
+
+    if (suspeita) {
+
+        resultado.innerHTML = `
+            <div class="resultado perigo">
+                🚨 ATENÇÃO: foram encontrados sinais que podem indicar
+                uma tentativa de golpe.
+                <br><br>
+                Não faça pagamentos nem forneça senhas ou códigos
+                antes de confirmar a informação por um canal oficial.
+            </div>
+        `;
+
+    } else {
+
+        resultado.innerHTML = `
+            <div class="resultado seguro">
+                ℹ️ Não encontramos sinais óbvios de golpe nesta análise.
+                <br><br>
+                Isso NÃO significa que a informação seja segura.
+                Sempre confirme a identidade da pessoa e a origem
+                da informação antes de realizar uma operação.
+            </div>
+        `;
+
+    }
+
 }
 
-# 1. Verificação de Pix
-if opcao == "Verificar Chave Pix":
-    st.header("🔍 Verificação de Chave Pix")
-    chave = st.text_input("Digite a chave Pix (E-mail, CPF/CNPJ ou Telefone):")
+function responderQuiz(correto) {
 
-    if st.button("Verificar Chave"):
-        if chave:
-            chave_limpa = chave.strip().lower()
-            if chave_limpa in SUSPECT_DATABASE["pix_suspeitos"]:
-                st.error("🚨 ATENÇÃO: Esta chave consta em nosso alerta de suspeita de golpe!")
-            else:
-                st.success("✅ Nenhum alerta registrado para esta chave até o momento.")
-                st.info(
-                    "💡 Dica: Sempre confirme o nome do destinatário no aplicativo do seu banco antes de confirmar a transferência."
-                )
-        else:
+    const resultado = document.getElementById("quizResultado");
 
-            st.warning("Por favor, insira uma chave para consultar.")
+    if (correto) {
 
-# 2. Verificação de Link
-elif opcao == "Verificar Link / Site":
-    st.header("🔗 Verificação de Link")
-    url = st.text_input("Cole o endereço do site ou link recebido por mensagem:")
+        resultado.innerHTML = `
+            <div class="resultado seguro" style="margin-top:20px;">
+                ✅ Correto! Antes de enviar dinheiro, confirme a identidade
+                da pessoa por outro canal confiável.
+            </div>
+        `;
 
-    if st.button("Analisar Link"):
-        if url:
-            url_limpa = url.strip().lower()
-            # Análise simples de protocolo e base de dados
-            if url_limpa in SUSPECT_DATABASE["links_suspeitos"]:
-                st.error("🚨 ALERTA: Este site é reconhecido como fraudulento!")
-            elif not url_limpa.startswith("https://"):
-                st.warning(
-                    "⚠️ CUIDADO: Este site não utiliza conexão segura (HTTPS). Evite inserir dados pessoais ou bancários."
-                )
-            else:
-                st.success("✅ O link possui estrutura segura padrão (HTTPS).")
-        else:
-            st.warning("Por favor, insira um link para analisar.")
+    } else {
 
-# 3. Dicas de Segurança
-elif opcao == "Dicas de Segurança":
-    st.header("🛡️ Guia Rápido Anti-Golpe no Campo")
+        resultado.innerHTML = `
+            <div class="resultado perigo" style="margin-top:20px;">
+                ❌ Cuidado! Nunca faça um pagamento apenas porque alguém
+                está pressionando você por mensagem.
+            </div>
+        `;
 
-    st.markdown("""
-    * **Compra de Insumos e Maquinários:** Desconfie de preços muito abaixo do mercado. Exija nota fiscal e verifique a existência física da empresa.
-    * **Venda de Produção:** Confirme a entrada do dinheiro no seu saldo bancário antes de liberar a carga. Não aceite apenas comprovantes impressos ou capturas de tela.
-    * **Mensagens de Bancos ou Órgãos Governamentais:** Bancos e o governo não pedem senhas ou códigos de verificação por WhatsApp.
-    * **Contatos de Compradores:** Se receber mensagem de um número novo dizendo ser um cliente antigo, confirme ligando para o número antigo do cliente.
-    """)
+    }
 
-# 4. Reportar Golpe
-elif opcao == "Reportar Golpe":
-    st.header("📢 Reportar Tentativa de Golpe")
-    st.write("Ajude a proteger outros produtores rurais cadastrando dados de golpistas.")
+}
 
-    tipo_golpe = st.selectbox(
-        "Tipo de Golpe",
-        ["Falso Leilão", "Insumo Falso", "Clonagem de WhatsApp", "Comprovante Falso", "Outro"],
-    )
-    dado_suspeito = st.text_input("Chave Pix, Telefone ou Link do Golpista:")
-    detalhes = st.text_area("Descreva o que aconteceu:")
+</script>
 
-    if st.button("Enviar Alerta"):
-        if dado_suspeito:
-            st.success("✅ Relato enviado com sucesso! A equipe analisará os dados para atualizar a plataforma.")
-        else:
-            st.warning("Por favor, informe ao menos o contato ou chave usada no golpe.")
+</body>
+</html>
