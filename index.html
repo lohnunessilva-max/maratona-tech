@@ -1,0 +1,106 @@
+import re
+import streamlit as st
+
+# Configuração da página
+st.set_page_config(
+    page_title="AgroSeguro - Proteção no Campo",
+    page_icon="🌾",
+    layout="centered",
+)
+
+# Título do Aplicativo
+st.title("🌾 AgroSeguro")
+st.subheader("Ferramenta de Prevenção a Golpes no Meio Rural")
+st.markdown(
+    "Verifique se dados de contatos, chaves Pix ou links possuem indícios de fraude antes de fechar um negócio."
+)
+
+st.divider()
+
+# Menu de opções
+opcao = st.sidebar.selectbox(
+    "O que você deseja verificar?",
+    [
+        "Verificar Chave Pix",
+        "Verificar Link / Site",
+        "Dicas de Segurança",
+        "Reportar Golpe",
+    ],
+)
+
+# Base de dados simulada de chaves e números suspeitos
+SUSPECT_DATABASE = {
+    "pix_suspeitos": ["compras@insumos-baratos.com", "00011122233"],
+    "links_suspeitos": [
+        "http://leilao-gado-barato.com",
+        "http://oferta-adubo-desconto.site",
+    ],
+}
+
+# 1. Verificação de Pix
+if opcao == "Verificar Chave Pix":
+    st.header("🔍 Verificação de Chave Pix")
+    chave = st.text_input("Digite a chave Pix (E-mail, CPF/CNPJ ou Telefone):")
+
+    if st.button("Verificar Chave"):
+        if chave:
+            chave_limpa = chave.strip().lower()
+            if chave_limpa in SUSPECT_DATABASE["pix_suspeitos"]:
+                st.error("🚨 ATENÇÃO: Esta chave consta em nosso alerta de suspeita de golpe!")
+            else:
+                st.success("✅ Nenhum alerta registrado para esta chave até o momento.")
+                st.info(
+                    "💡 Dica: Sempre confirme o nome do destinatário no aplicativo do seu banco antes de confirmar a transferência."
+                )
+        else:
+
+            st.warning("Por favor, insira uma chave para consultar.")
+
+# 2. Verificação de Link
+elif opcao == "Verificar Link / Site":
+    st.header("🔗 Verificação de Link")
+    url = st.text_input("Cole o endereço do site ou link recebido por mensagem:")
+
+    if st.button("Analisar Link"):
+        if url:
+            url_limpa = url.strip().lower()
+            # Análise simples de protocolo e base de dados
+            if url_limpa in SUSPECT_DATABASE["links_suspeitos"]:
+                st.error("🚨 ALERTA: Este site é reconhecido como fraudulento!")
+            elif not url_limpa.startswith("https://"):
+                st.warning(
+                    "⚠️ CUIDADO: Este site não utiliza conexão segura (HTTPS). Evite inserir dados pessoais ou bancários."
+                )
+            else:
+                st.success("✅ O link possui estrutura segura padrão (HTTPS).")
+        else:
+            st.warning("Por favor, insira um link para analisar.")
+
+# 3. Dicas de Segurança
+elif opcao == "Dicas de Segurança":
+    st.header("🛡️ Guia Rápido Anti-Golpe no Campo")
+
+    st.markdown("""
+    * **Compra de Insumos e Maquinários:** Desconfie de preços muito abaixo do mercado. Exija nota fiscal e verifique a existência física da empresa.
+    * **Venda de Produção:** Confirme a entrada do dinheiro no seu saldo bancário antes de liberar a carga. Não aceite apenas comprovantes impressos ou capturas de tela.
+    * **Mensagens de Bancos ou Órgãos Governamentais:** Bancos e o governo não pedem senhas ou códigos de verificação por WhatsApp.
+    * **Contatos de Compradores:** Se receber mensagem de um número novo dizendo ser um cliente antigo, confirme ligando para o número antigo do cliente.
+    """)
+
+# 4. Reportar Golpe
+elif opcao == "Reportar Golpe":
+    st.header("📢 Reportar Tentativa de Golpe")
+    st.write("Ajude a proteger outros produtores rurais cadastrando dados de golpistas.")
+
+    tipo_golpe = st.selectbox(
+        "Tipo de Golpe",
+        ["Falso Leilão", "Insumo Falso", "Clonagem de WhatsApp", "Comprovante Falso", "Outro"],
+    )
+    dado_suspeito = st.text_input("Chave Pix, Telefone ou Link do Golpista:")
+    detalhes = st.text_area("Descreva o que aconteceu:")
+
+    if st.button("Enviar Alerta"):
+        if dado_suspeito:
+            st.success("✅ Relato enviado com sucesso! A equipe analisará os dados para atualizar a plataforma.")
+        else:
+            st.warning("Por favor, informe ao menos o contato ou chave usada no golpe.")
