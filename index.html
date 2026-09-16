@@ -132,7 +132,7 @@
             margin-bottom: 7px;
         }
 
-        input, select {
+        input[type="text"], select {
             width: 100%;
             padding: 13px;
             border: 1px solid #bbb;
@@ -191,8 +191,30 @@
             border-radius: 12px;
         }
 
+        .checklist ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
         .checklist li {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checklist input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #2e7d32;
+        }
+
+        .checklist label {
+            margin-bottom: 0;
+            font-weight: normal;
+            cursor: pointer;
         }
 
         .fake-news {
@@ -293,15 +315,12 @@
 <main class="container">
 
     <section class="hero">
-
         <h2>🛡️ Proteja sua propriedade e seu negócio</h2>
-
         <p>
             A tecnologia trouxe muitas facilidades para o produtor rural:
             pagamentos digitais, WhatsApp, marketplaces, leilões online
             e negociações à distância.
         </p>
-
         <p>
             Mas também aumentaram os riscos de golpes digitais.
             O AgroSeguro foi criado para ajudar você a reconhecer sinais
@@ -314,13 +333,11 @@
             fornecer um código, clicar em um link ou enviar documentos,
             pare e confirme a informação por outro canal.
         </div>
-
     </section>
 
     <!-- VERIFICADOR -->
 
     <section id="verificador" class="verificador">
-
         <h2 class="section-title">🔎 Verificador de Segurança</h2>
 
         <p>
@@ -329,7 +346,6 @@
         </p>
 
         <label for="tipo">O que você deseja analisar?</label>
-
         <select id="tipo">
             <option value="pix">Chave Pix</option>
             <option value="telefone">Número de telefone</option>
@@ -339,7 +355,6 @@
         </select>
 
         <label for="dados">Digite ou cole a informação:</label>
-
         <input
             type="text"
             id="dados"
@@ -351,7 +366,6 @@
         </button>
 
         <div id="resultado"></div>
-
     </section>
 
     <!-- GOLPES -->
@@ -509,20 +523,48 @@
     </h2>
 
     <section class="checklist">
-
         <ul>
-            <li>☐ Confirme o nome do destinatário antes de concluir o Pix.</li>
-            <li>☐ Verifique se a pessoa realmente está negociando com você.</li>
-            <li>☐ Faça uma ligação usando um número que você já conhece.</li>
-            <li>☐ Desconfie de preços muito abaixo do mercado.</li>
-            <li>☐ Não faça pagamento apenas porque alguém está pressionando.</li>
-            <li>☐ Confira o endereço do site antes de inserir seus dados.</li>
-            <li>☐ Evite clicar em links recebidos de desconhecidos.</li>
-            <li>☐ Nunca forneça senhas ou códigos de autenticação.</li>
-            <li>☐ Guarde contratos, comprovantes e conversas importantes.</li>
-            <li>☐ Em caso de dúvida, interrompa a negociação e procure confirmação.</li>
+            <li>
+                <input type="checkbox" id="chk1">
+                <label for="chk1">Confirme o nome do destinatário antes de concluir o Pix.</label>
+            </li>
+            <li>
+                <input type="checkbox" id="chk2">
+                <label for="chk2">Verifique se a pessoa realmente está negociando com você.</label>
+            </li>
+            <li>
+                <input type="checkbox" id="chk3">
+                <label for="chk3">Faça uma ligação usando um número que você já conhece.</label>
+            </li>
+            <li>
+                <input type="checkbox" id="chk4">
+                <label for="chk4">Desconfie de preços muito abaixo do mercado.</label>
+            </li>
+            <li>
+                <input type="checkbox" id="chk5">
+                <label for="chk5">Não faça pagamento apenas porque alguém está pressionando.</label>
+            </li>
+            <li>
+                <input type="checkbox" id="chk6">
+                <label for="chk6">Confira o endereço do site antes de inserir seus dados.</label>
+            </li>
+            <li>
+                <input type="checkbox" id="chk7">
+                <label for="chk7">Evite clicar em links recebidos de desconhecidos.</label>
+            </li>
+            <li>
+                <input type="checkbox" id="chk8">
+                <label for="chk8">Nunca forneça senhas ou códigos de autenticação.</label>
+            </li>
+            <li>
+                <input type="checkbox" id="chk9">
+                <label for="chk9">Guarde contratos, comprovantes e conversas importantes.</label>
+            </li>
+            <li>
+                <input type="checkbox" id="chk10">
+                <label for="chk10">Em caso de dúvida, interrompa a negociação e procure confirmação.</label>
+            </li>
         </ul>
-
     </section>
 
     <!-- WHATSAPP -->
@@ -619,115 +661,92 @@
 </footer>
 
 <script>
-
 function verificarGolpe() {
-
-    const input = document
-        .getElementById("dados")
-        .value
-        .trim()
-        .toLowerCase();
-
+    const input = document.getElementById("dados").value.trim().toLowerCase();
     const tipo = document.getElementById("tipo").value;
     const resultado = document.getElementById("resultado");
 
     if (input === "") {
-
         resultado.innerHTML = `
             <div class="resultado atencao">
                 ⚠️ Digite alguma informação para realizar a análise.
             </div>
         `;
-
         return;
     }
 
-    /*
-        IMPORTANTE:
-        Esta análise é educativa e NÃO consulta uma base real
-        de denúncias.
-    */
+    let suspeita = false;
+    let motivo = "";
 
+    // Termos gerais de alerta
     const palavrasSuspeitas = [
-        "urgente",
-        "pix agora",
-        "conta segura",
-        "senha",
-        "código",
-        "clique aqui",
-        "ganhou",
-        "prêmio",
-        "depósito",
-        "taxa",
-        "liberar",
-        "golpe",
-        "fraude"
+        "urgente", "pix agora", "conta segura", "senha", "código",
+        "clique aqui", "ganhou", "prêmio", "depósito", "taxa",
+        "liberar", "golpe", "fraude", "bloqueado", "atrasado"
     ];
 
-    let suspeita = false;
-
+    // Checagem de palavras-chave
     palavrasSuspeitas.forEach(function(palavra) {
-
         if (input.includes(palavra)) {
             suspeita = true;
+            motivo = "Foram identificadas palavras frequentemente associadas a urgência ou pedidos incomuns.";
         }
-
     });
 
-    if (suspeita) {
-
-        resultado.innerHTML = `
-            <div class="resultado perigo">
-                🚨 ATENÇÃO: foram encontrados sinais que podem indicar
-                uma tentativa de golpe.
-                <br><br>
-                Não faça pagamentos nem forneça senhas ou códigos
-                antes de confirmar a informação por um canal oficial.
-            </div>
-        `;
-
-    } else {
-
-        resultado.innerHTML = `
-            <div class="resultado seguro">
-                ℹ️ Não encontramos sinais óbvios de golpe nesta análise.
-                <br><br>
-                Isso NÃO significa que a informação seja segura.
-                Sempre confirme a identidade da pessoa e a origem
-                da informação antes de realizar uma operação.
-            </div>
-        `;
-
+    // Análise por tipo específico
+    if (tipo === "link") {
+        if (!input.startsWith("https://")) {
+            suspeita = true;
+            motivo = "O link informado não utiliza uma conexão segura (HTTPS). Evite acessar.";
+        } else if (input.includes(".xyz") || input.includes(".top") || input.includes(".site")) {
+            suspeita = true;
+            motivo = "O endereço utiliza uma extensão incomum para empresas conhecidas ou leilões.";
+        }
+    } else if (tipo === "telefone") {
+        const apenasNumeros = input.replace(/\D/g, '');
+        if (apenasNumeros.length > 0 && apenasNumeros.length < 10) {
+            suspeita = true;
+            motivo = "O número informado possui quantidade de dígitos inválida para um telefone com DDD.";
+        }
     }
 
+    if (suspeita) {
+        resultado.innerHTML = `
+            <div class="resultado perigo">
+                🚨 ATENÇÃO: foram encontrados sinais de alerta nessa análise.
+                <br><br>
+                ${motivo ? '<strong>Detalhe:</strong> ' + motivo + '<br><br>' : ''}
+                Não faça pagamentos, não clique em links e nem forneça senhas ou códigos antes de confirmar por um canal oficial.
+            </div>
+        `;
+    } else {
+        resultado.innerHTML = `
+            <div class="resultado seguro">
+                ℹ️ Não encontramos sinais óbvios de risco na verificação automática.
+                <br><br>
+                Isso NÃO garante 100% que seja seguro. Sempre confirme a identidade da pessoa e a origem da informação por outro meio confiável.
+            </div>
+        `;
+    }
 }
 
 function responderQuiz(correto) {
-
     const resultado = document.getElementById("quizResultado");
 
     if (correto) {
-
         resultado.innerHTML = `
             <div class="resultado seguro" style="margin-top:20px;">
-                ✅ Correto! Antes de enviar dinheiro, confirme a identidade
-                da pessoa por outro canal confiável.
+                ✅ Correto! Antes de enviar dinheiro, confirme a identidade da pessoa por outro canal confiável (ligação normal, presencialmente, etc).
             </div>
         `;
-
     } else {
-
         resultado.innerHTML = `
             <div class="resultado perigo" style="margin-top:20px;">
-                ❌ Cuidado! Nunca faça um pagamento apenas porque alguém
-                está pressionando você por mensagem.
+                ❌ Cuidado! Nunca faça um pagamento apenas porque alguém está pressionando você por mensagem.
             </div>
         `;
-
     }
-
 }
-
 </script>
 
 </body>
