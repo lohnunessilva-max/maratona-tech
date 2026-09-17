@@ -1,72 +1,276 @@
-# Projeto: AgroSeguro - Sistema de Alerta e Prevenção de Golpes no Campo
-# Descrição: Ferramenta interativa para auxiliar produtores rurais a identificarem fraudes digitais.
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroSeguro - Segurança Digital no Campo</title>
+    <style>
+        :root {
+            --cor-primaria: #2e7d32; /* Verde Agro */
+            --cor-secundaria: #8d6e63; /* Tom de Terra */
+            --cor-fundo: #f4f6f4;
+            --cor-card: #ffffff;
+            --cor-texto: #333333;
+        }
 
-def exibir_cabecalho():
-    print("=" * 60)
-    print("         PROJETO AGROSEGURO - SEGURANÇA DIGITAL NO CAMPO         ")
-    print("=" * 60)
-    print("Este programa ajuda a identificar se você está sofrendo um golpe.")
-    print("Responda às perguntas com (1) para Sim ou (2) para Não.\n")
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-def analise_golpe():
-    exibir_cabecalho()
-    
-    pontos_risco = 0
-    alertas = []
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--cor-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+        }
 
-    # Pergunta 1
-    p1 = input("1. Alguém entrou em contato dizendo ser do banco, gerente ou cooperativa, pedindo dados ou senha? \n[1] Sim | [2] Não: ")
-    if p1 == "1":
-        pontos_risco += 3
-        alertas.append("- Alerta de Falsos Funcionários / Golpe da Mão Fantasma.")
+        header {
+            text-align: center;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
 
-    # Pergunta 2
-    p2 = input("\n2. Recebeu mensagem sobre problemas no seu cadastro do Pronaf, Nota Fiscal ou imposto, com link urgente? \n[1] Sim | [2] Não: ")
-    if p2 == "1":
-        pontos_risco += 2
-        alertas.append("- Alerta de Phishing / Falsos Links governamentais ou bancários.")
+        header h1 {
+            color: var(--cor-primaria);
+            font-size: 24px;
+            margin: 0 0 10px 0;
+        }
 
-    # Pergunta 3
-    p3 = input("\n3. Estão oferecendo insumos (sementes, adubo, maquinário) ou empréstimos com preços muito abaixo do mercado, exigindo Pix antecipado? \n[1] Sim | [2] Não: ")
-    if p3 == "1":
-        pontos_risco += 3
-        alertas.append("- Alerta de Falsa Loja Agrícola / Golpe do Falso Leilão ou Insumo.")
+        header p {
+            color: #666;
+            font-size: 14px;
+            margin: 0;
+        }
 
-    # Pergunta 4
-    p4 = input("\n4. A pessoa com quem você fala está apressando a transação, dizendo que a oportunidade vai acabar agora? \n[1] Sim | [2] Não: ")
-    if p4 == "1":
-        pontos_risco += 1
-        alertas.append("- Pressão Psicológica (característica comum em estelionatos).")
+        .pergunta-bloco {
+            margin-bottom: 20px;
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--cor-primaria);
+        }
 
-    # Resultado da Análise
-    print("\n" + "=" * 60)
-    print("                   RESULTADO DA ANÁLISE                         ")
-    print("=" * 60)
+        .pergunta-bloco p {
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
 
-    if pontos_risco >= 4:
-        print("🚨 [PERIGO ALTO] As chances de ser GOLPE são ALTAS!")
-        print("Recomendações urgentes:")
-        print("• NÃO faça nenhuma transferência ou pagamento via Pix.")
-        print("• NÃO clique em links recebidos por WhatsApp ou SMS.")
-        print("• Vá até a agência física da sua cooperativa ou banco para confirmar.")
-    elif pontos_risco >= 2:
-        print("⚠️ [ATENÇÃO] Há sinais suspeitos nesta situação.")
-        print("Recomendações:")
-        print("• Desconfie e verifique a identidade de quem está falando por outro canal oficial.")
-        print("• Nunca compartilhe senhas ou códigos de confirmação.")
-    else:
-        print("✅ [BAIXO RISCO AParente] A princípio, a situação parece segura.")
-        print("• Mantenha sempre a cautela e proteja seus dados pessoais.")
+        .opcoes label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-size: 15px;
+        }
 
-    if alertas:
-        print("\nTipos de ameaças detectadas:")
-        for alerta in alertas:
-            print(f"  {alerta}")
-    
-    print("\n" + "=" * 60)
-    print("Em caso de dúvida, ligue para a central oficial da sua instituição financeira.")
-    print("=" * 60)
+        button.btn-analisar {
+            width: 100%;
+            background-color: var(--cor-primaria);
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
 
-# Execução do programa
-if __name__ == "__main__":
-  analise_golpe()
+        button.btn-analisar:hover {
+            background-color: #1b5e20;
+        }
+
+        #resultado {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .alerta-alto {
+            background-color: #ffebee;
+            border: 1px solid #ffcdd2;
+            color: #c62828;
+        }
+
+        .alerta-medio {
+            background-color: #fff8e1;
+            border: 1px solid #ffe082;
+            color: #f57f17;
+        }
+
+        .alerta-baixo {
+            background-color: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            color: #2e7d32;
+        }
+
+        #resultado h3 {
+            margin-top: 0;
+        }
+
+        .lista-alertas {
+            margin-top: 10px;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 12px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>🌾 AgroSeguro</h1>
+            <p>Assistente de Prevenção a Golpes Digitais no Campo</p>
+        </header>
+
+        <form id="formGolpe" onsubmit="analisarRisco(event)">
+            
+            <!-- Pergunta 1 -->
+            <div class="pergunta-bloco">
+                <p>1. Alguém entrou em contato dizendo ser do banco, gerente ou cooperativa, pedindo dados ou senha?</p>
+                <div class="opcoes">
+                    <label><input type="radio" name="p1" value="1" required> Sim</label>
+                    <label><input type="radio" name="p1" value="0"> Não</label>
+                </div>
+            </div>
+
+            <!-- Pergunta 2 -->
+            <div class="pergunta-bloco">
+                <p>2. Recebeu mensagem sobre problemas no seu cadastro do Pronaf, Nota Fiscal ou imposto, com link urgente?</p>
+                <div class="opcoes">
+                    <label><input type="radio" name="p2" value="1" required> Sim</label>
+                    <label><input type="radio" name="p2" value="0"> Não</label>
+                </div>
+            </div>
+
+            <!-- Pergunta 3 -->
+            <div class="pergunta-bloco">
+                <p>3. Estão oferecendo insumos (sementes, adubo, tratores) com preços muito abaixo do mercado, exigindo Pix antecipado?</p>
+                <div class="opcoes">
+                    <label><input type="radio" name="p3" value="1" required> Sim</label>
+                    <label><input type="radio" name="p3" value="0"> Não</label>
+                </div>
+            </div>
+
+            <!-- Pergunta 4 -->
+            <div class="pergunta-bloco">
+                <p>4. A pessoa com quem você fala está apressando a transação, dizendo que a oportunidade vai acabar agora?</p>
+                <div class="opcoes">
+                    <label><input type="radio" name="p4" value="1" required> Sim</label>
+                    <label><input type="radio" name="p4" value="0"> Não</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-analisar">Verificar Situação</button>
+        </form>
+
+        <!-- Caixa de Resultado -->
+        <div id="resultado"></div>
+
+        <footer>
+            Projeto educacional de segurança digital para o produtor rural.
+        </footer>
+    </div>
+
+    <script>
+        function analisarRisco(event) {
+            event.preventDefault(); // Evita que a página recarregue
+
+            // Captura os valores selecionados
+            let p1 = parseInt(document.querySelector('input[name="p1"]:checked').value);
+            let p2 = parseInt(document.querySelector('input[name="p2"]:checked').value);
+            let p3 = parseInt(document.querySelector('input[name="p3"]:checked').value);
+            let p4 = parseInt(document.querySelector('input[name="p4"]:checked').value);
+
+            let pontosRisco = 0;
+            let alertas = [];
+
+            if (p1 === 1) {
+                pontosRisco += 3;
+                alertas.push("Alerta de Falsos Funcionários / Golpe do Falso Gerente.");
+            }
+            if (p2 === 1) {
+                pontosRisco += 2;
+                alertas.push("Alerta de Phishing / Falsos Links governamentais ou bancários.");
+            }
+            if (p3 === 1) {
+                pontosRisco += 3;
+                alertas.push("Alerta de Falsa Loja Agrícola / Golpe de Insumos ou Maquinário.");
+            }
+            if (p4 === 1) {
+                pontosRisco += 1;
+                alertas.push("Pressão Psicológica (urgência forçada).");
+            }
+
+            let divResultado = document.getElementById("resultado");
+            divResultado.style.display = "block";
+            divResultado.className = ""; // Limpa classes anteriores
+
+            let htmlConteudo = "";
+
+            if (pontosRisco >= 4) {
+                divResultado.classList.add("alerta-alto");
+                htmlConteudo = `
+                    <h3>🚨 [PERIGO ALTO] As chances de ser GOLPE são ALTAS!</h3>
+                    <p><strong>Recomendações urgentes:</strong></p>
+                    <ul>
+                        <li>NÃO faça nenhuma transferência ou pagamento via Pix.</li>
+                        <li>NÃO clique em links recebidos por WhatsApp ou SMS.</li>
+                        <li>Vá até a agência física da sua cooperativa ou banco para confirmar.</li>
+                    </ul>
+                `;
+            } else if (pontosRisco >= 2) {
+                divResultado.classList.add("alerta-medio");
+                htmlConteudo = `
+                    <h3>⚠️ [ATENÇÃO] Há sinais suspeitos nesta situação.</h3>
+                    <p><strong>Recomendações:</strong></p>
+                    <ul>
+                        <li>Desconfie e verifique a identidade de quem está falando por canal oficial.</li>
+                        <li>Nunca compartilhe senhas ou códigos de confirmação.</li>
+                    </ul>
+                `;
+            } else {
+                divResultado.classList.add("alerta-baixo");
+                htmlConteudo = `
+                    <h3>✅ [BAIXO RISCO APARENTE] A situação parece segura.</h3>
+                    <p>Mantenha sempre a cautela e proteja seus dados pessoais. Na dúvida, consulte sempre um familiar ou técnico de confiança.</p>
+                `;
+            }
+
+            if (alertas.length > 0) {
+                htmlConteudo += `<p><strong>Ameaças detectadas:</strong></p><ul class="lista-alertas">`;
+                alertas.forEach(alerta => {
+                    htmlConteudo += `<li>${alerta}</li>`;
+                });
+                htmlConteudo += `</ul>`;
+            }
+
+            divResultado.innerHTML = htmlConteudo;
+            
+            // Rola a página suavemente até o resultado
+            divResultado.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
