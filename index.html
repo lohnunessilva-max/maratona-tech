@@ -3,142 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgroSeguro - Segurança Digital no Campo</title>
-    
-    <!-- ESTILOS (CSS) -->
+    <title>Segurança Digital no Campo - Projeto AgroSeguro</title>
     <style>
         :root {
-            --cor-primaria: #2e7d32;
-            --cor-secundaria: #8d6e63;
-            --cor-fundo: #f4f6f4;
-            --cor-card: #ffffff;
-            --cor-texto: #333333;
+            --primary: #1b4332;
+            --primary-light: #2d6a4f;
+            --accent: #52b788;
+            --bg-color: #f4f6f4;
+            --card-bg: #ffffff;
+            --text-main: #212529;
+            --text-muted: #6c757d;
+            --danger: #9b2226;
+            --danger-bg: #f8d7da;
+            --warning: #ca6702;
+            --warning-bg: #fff3cd;
+            --success: #2b9348;
+            --success-bg: #d4edda;
         }
 
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--cor-fundo);
-            color: var(--cor-texto);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
         }
 
         .container {
-            width: 100%;
-            max-width: 600px;
-            background: var(--cor-card);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin: 20px;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
         header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
             text-align: center;
-            border-bottom: 2px solid #e0e0e0;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         header h1 {
-            color: var(--cor-primaria);
-            font-size: 24px;
-            margin: 0 0 10px 0;
-        }
-
-        header p {
-            color: #666;
-            font-size: 14px;
-            margin: 0;
-        }
-
-        .pergunta-bloco {
-            margin-bottom: 20px;
-            background: #fafafa;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid var(--cor-primaria);
-        }
-
-        .pergunta-bloco p {
-            font-weight: 600;
-            margin-top: 0;
+            font-size: 2.2rem;
             margin-bottom: 10px;
         }
 
-        .opcoes label {
-            display: block;
-            margin-bottom: 8px;
-            cursor: pointer;
-            font-size: 15px;
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
         }
 
-        .btn-analisar {
-            width: 100%;
-            background-color: var(--cor-primaria);
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+
+        /* Seção de Quiz Interativo */
+        .question-group {
+            background: #f8f9fa;
+            padding: 18px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .question-group p {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        .options label {
+            display: inline-block;
+            margin-right: 25px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn {
+            background-color: var(--primary-light);
             color: white;
             border: none;
-            padding: 14px;
-            font-size: 16px;
+            padding: 12px 25px;
+            font-size: 1rem;
             font-weight: bold;
             border-radius: 6px;
             cursor: pointer;
+            width: 100%;
             transition: background 0.3s;
-            margin-top: 10px;
         }
 
-        .btn-analisar:hover {
-            background-color: #1b5e20;
+        .btn:hover {
+            background-color: var(--primary);
         }
 
         #resultado {
+            display: none;
             margin-top: 25px;
             padding: 20px;
             border-radius: 8px;
-            display: none;
         }
 
-        .alerta-alto {
-            background-color: #ffebee;
-            border: 1px solid #ffcdd2;
-            color: #c62828;
+        .result-high { background-color: var(--danger-bg); border: 1px solid #f5c6cb; color: #721c24; }
+        .result-medium { background-color: var(--warning-bg); border: 1px solid #ffeeba; color: #856404; }
+        .result-low { background-color: var(--success-bg); border: 1px solid #c3e6cb; color: #155724; }
+
+        /* Guia de Golpes Comuns */
+        .scam-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
         }
 
-        .alerta-medio {
-            background-color: #fff8e1;
-            border: 1px solid #ffe082;
-            color: #f57f17;
+        .scam-item {
+            background: #fdfdfd;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            border-radius: 8px;
+            transition: transform 0.2s;
         }
 
-        .alerta-baixo {
-            background-color: #e8f5e9;
-            border: 1px solid #c8e6c9;
-            color: #2e7d32;
+        .scam-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.05);
         }
 
-        #resultado h3 {
-            margin-top: 0;
+        .scam-item h3 {
+            color: var(--warning);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
         }
 
-        .lista-alertas {
-            margin-top: 10px;
-            padding-left: 20px;
-            font-size: 14px;
+        .scam-item p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        /* Seção de Dicas de Prevenção */
+        .tips-list {
+            list-style: none;
+        }
+
+        .tips-list li {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .tips-list li::before {
+            content: "🛡️";
+            position: absolute;
+            left: 0;
+            top: 0;
         }
 
         footer {
             text-align: center;
-            margin-top: 25px;
-            font-size: 12px;
-            color: #888;
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            padding-bottom: 20px;
         }
     </style>
 </head>
@@ -146,147 +190,138 @@
 
     <div class="container">
         <header>
-            <h1>🌾 AgroSeguro</h1>
-            <p>Assistente de Prevenção a Golpes Digitais no Campo</p>
+            <h1>🌾 AgroSeguro: Segurança Digital no Campo</h1>
+            <p>Protegendo produtores rurais, cooperativas e comunidades agrícolas contra fraudes e golpes virtuais.</p>
         </header>
 
-        <form id="formGolpe">
+        <!-- Seção 1: Triagem Interativa / Quiz -->
+        <section class="card">
+            <h2>🔍 Assistente de Triagem: É Golpe?</h2>
+            <p style="margin-bottom: 20px; color: var(--text-muted);">Responda às perguntas abaixo para avaliar os riscos de uma situação suspeita que você ou sua propriedade sofreram recentemente.</p>
             
-            <!-- Pergunta 1 -->
-            <div class="pergunta-bloco">
-                <p>1. Alguém entrou em contato dizendo ser do banco, gerente ou cooperativa, pedindo dados ou senha?</p>
-                <div class="opcoes">
-                    <label><input type="radio" name="p1" value="1" required> Sim</label>
-                    <label><input type="radio" name="p1" value="0"> Não</label>
+            <form id="quizForm">
+                <div class="question-group">
+                    <p>1. Alguém entrou em contato se passando por gerente do banco, cooperativa ou suporte técnico, solicitando senhas ou códigos?</p>
+                    <div class="options">
+                        <label><input type="radio" name="q1" value="3" required> Sim</label>
+                        <label><input type="radio" name="q1" value="0"> Não</label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p>2. Recebeu mensagens urgentes sobre regularização de Pronaf, Nota Fiscal Rural ou impostos com links para clicar?</p>
+                    <div class="options">
+                        <label><input type="radio" name="q2" value="2" required> Sim</label>
+                        <label><input type="radio" name="q2" value="0"> Não</label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p>3. Encontrou ofertas de insumos (sementes, fertilizantes) ou maquinários agrícolas muito abaixo do preço de mercado, exigindo Pix antecipado?</p>
+                    <div class="options">
+                        <label><input type="radio" name="q3" value="3" required> Sim</label>
+                        <label><input type="radio" name="q3" value="0"> Não</label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p>4. O suposto vendedor ou atendente está pressionando para fechar o negócio rapidamente, alegando que "a oferta vai acabar agora"?</p>
+                    <div class="options">
+                        <label><input type="radio" name="q4" value="1" required> Sim</label>
+                        <label><input type="radio" name="q4" value="0"> Não</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn">Analisar Risco Agora</button>
+            </form>
+
+            <div id="resultado"></div>
+        </section>
+
+        <!-- Seção 2: Principais Golpes no Campo -->
+        <section class="card">
+            <h2>⚠️ Principais Golpes Frequentes no Meio Rural</h2>
+            <div class="scam-grid">
+                <div class="scam-item">
+                    <h3>Falso Leilão de Tratores</h3>
+                    <p>Sites falsos imitam leilões oficiais de bancos ou órgãos públicos oferecendo maquinário pesado por preços irrisórios.</p>
+                </div>
+                <div class="scam-item">
+                    <h3>Golpe do Pronaf Falso</h3>
+                    <p>Criminosos enviam mensagens oferecendo liberação rápida de crédito agrícola mediante pagamento prévio de taxas falsas.</p>
+                </div>
+                <div class="scam-item">
+                    <h3>Falso Funcionário / Central</h3>
+                    <p>Ligação ou mensagem fingindo ser da cooperativa ou banco, informando bloqueio de conta e pedindo transferência via Pix.</p>
                 </div>
             </div>
+        </section>
 
-            <!-- Pergunta 2 -->
-            <div class="pergunta-bloco">
-                <p>2. Recebeu mensagem sobre problemas no seu cadastro do Pronaf, Nota Fiscal ou imposto, com link urgente?</p>
-                <div class="opcoes">
-                    <label><input type="radio" name="p2" value="1" required> Sim</label>
-                    <label><input type="radio" name="p2" value="0"> Não</label>
-                </div>
-            </div>
-
-            <!-- Pergunta 3 -->
-            <div class="pergunta-bloco">
-                <p>3. Estão oferecendo insumos (sementes, adubo, tratores) com preços muito abaixo do mercado, exigindo Pix antecipado?</p>
-                <div class="opcoes">
-                    <label><input type="radio" name="p3" value="1" required> Sim</label>
-                    <label><input type="radio" name="p3" value="0"> Não</label>
-                </div>
-            </div>
-
-            <!-- Pergunta 4 -->
-            <div class="pergunta-bloco">
-                <p>4. A pessoa com quem você fala está apressando a transação, dizendo que a oportunidade vai acabar agora?</p>
-                <div class="opcoes">
-                    <label><input type="radio" name="p4" value="1" required> Sim</label>
-                    <label><input type="radio" name="p4" value="0"> Não</label>
-                </div>
-            </div>
-
-            <button type="submit" class="btn-analisar">Verificar Situação</button>
-        </form>
-
-        <!-- Caixa de Resultado Dinâmico -->
-        <div id="resultado"></div>
+        <!-- Seção 3: Medidas de Proteção -->
+        <section class="card">
+            <h2>🛡️ Como Proteger sua Propriedade e Família</h2>
+            <ul class="tips-list">
+                <li><strong>Desconfie de facilidades:</strong> Insumos e máquinas com preços milagrosos são quase sempre armadilhas.</li>
+                <li><strong>Confirme os canais oficiais:</strong> Nunca utilize números de telefone informados em mensagens suspeitas; ligue para o seu gerente habitual.</li>
+                <li><strong>Sigilo absoluto:</strong> Senhas bancárias, chaves Pix de resgate e códigos SMS nunca devem ser passados por telefone ou chat.</li>
+                <li><strong>Cuidado com links:</strong> Evite clicar em links encurtados recebidos por WhatsApp de números desconhecidos.</li>
+            </ul>
+        </section>
 
         <footer>
-            Projeto educacional de segurança digital para o produtor rural.
+            <p>&copy; 2026 Projeto AgroSeguro. Desenvolvido para educação e conscientização digital no campo.</p>
         </footer>
     </div>
 
-    <!-- LÓGICA E COMPORTAMENTO (JavaScript) -->
+    <!-- Lógica JavaScript Organizada -->
     <script>
-        document.getElementById("formGolpe").addEventListener("submit", function(event) {
-            event.preventDefault(); // Impede o recarregamento da página
+        document.getElementById('quizForm').addEventListener('submit', function(e) {
+            e.preventDefault();
 
-            // Coleta de dados das respostas
-            const respostas = {
-                p1: parseInt(document.querySelector('input[name="p1"]:checked').value),
-                p2: parseInt(document.querySelector('input[name="p2"]:checked').value),
-                p3: parseInt(document.querySelector('input[name="p3"]:checked').value),
-                p4: parseInt(document.querySelector('input[name="p4"]:checked').value)
-            };
+            let score = 0;
+            score += parseInt(document.querySelector('input[name="q1"]:checked').value);
+            score += parseInt(document.querySelector('input[name="q2"]:checked').value);
+            score += parseInt(document.querySelector('input[name="q3"]:checked').value);
+            score += parseInt(document.querySelector('input[name="q4"]:checked').value);
 
-            processarAnalise(respostas);
-        });
+            const resultDiv = document.getElementById('resultado');
+            resultDiv.style.display = 'block';
+            resultDiv.className = '';
 
-        function processarAnalise(respostas) {
-            let pontosRisco = 0;
-            let alertas = [];
+            let htmlContent = '';
 
-            // Regras de pontuação e alertas
-            if (respostas.p1 === 1) {
-                pontosRisco += 3;
-                alertas.push("Alerta de Falsos Funcionários / Golpe do Falso Gerente.");
-            }
-            if (respostas.p2 === 1) {
-                pontosRisco += 2;
-                alertas.push("Alerta de Phishing / Falsos Links governamentais ou bancários.");
-            }
-            if (respostas.p3 === 1) {
-                pontosRisco += 3;
-                alertas.push("Alerta de Falsa Loja Agrícola / Golpe de Insumos ou Maquinário.");
-            }
-            if (respostas.p4 === 1) {
-                pontosRisco += 1;
-                alertas.push("Pressão Psicológica (urgência forçada).");
-            }
-
-            exibirResultado(pontosRisco, alertas);
-        }
-
-        function exibirResultado(pontos, alertas) {
-            const divResultado = document.getElementById("resultado");
-            divResultado.style.display = "block";
-            divResultado.className = ""; // Limpa classes de estilo anteriores
-
-            let htmlConteudo = "";
-
-            if (pontos >= 4) {
-                divResultado.classList.add("alerta-alto");
-                htmlConteudo = `
-                    <h3>🚨 [PERIGO ALTO] As chances de ser GOLPE são ALTAS!</h3>
-                    <p><strong>Recomendações urgentes:</strong></p>
-                    <ul>
-                        <li>NÃO faça nenhuma transferência ou pagamento via Pix.</li>
-                        <li>NÃO clique em links recebidos por WhatsApp ou SMS.</li>
-                        <li>Vá até a agência física da sua cooperativa ou banco para confirmar.</li>
+            if (score >= 4) {
+                resultDiv.classList.add('result-high');
+                htmlContent = `
+                    <h3>🚨 RISCO ALTO DE GOLPE!</h3>
+                    <p>Os indícios apontam fortemente para uma tentativa de fraude. <strong>Aja imediatamente:</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>NÃO faça nenhuma transferência, Pix ou pagamento.</li>
+                        <li>Interrompa o contato com o golpista imediatamente.</li>
+                        <li>Procure a agência física da sua cooperativa ou banco oficial.</li>
                     </ul>
                 `;
-            } else if (pontos >= 2) {
-                divResultado.classList.add("alerta-medio");
-                htmlConteudo = `
-                    <h3>⚠️ [ATENÇÃO] Há sinais suspeitos nesta situação.</h3>
-                    <p><strong>Recomendações:</strong></p>
-                    <ul>
-                        <li>Desconfie e verifique a identidade de quem está falando por canal oficial.</li>
-                        <li>Nunca compartilhe senhas ou códigos de confirmação.</li>
+            } else if (score >= 2) {
+                resultDiv.classList.add('result-medium');
+                htmlContent = `
+                    <h3>⚠️ ATENÇÃO: Situação Suspeita!</h3>
+                    <p>Existem pontos de alerta nesta situação. <strong>Recomendações:</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Confirme a identidade da pessoa utilizando outro canal seguro ou vá até a sede local.</li>
+                        <li>Nunca forneça dados confidenciais ou senhas.</li>
                     </ul>
                 `;
             } else {
-                divResultado.classList.add("alerta-baixo");
-                htmlConteudo = `
-                    <h3>✅ [BAIXO RISCO APARENTE] A situação parece segura.</h3>
-                    <p>Mantenha sempre a cautela e proteja seus dados pessoais. Na dúvida, consulte sempre um familiar ou técnico de confiança.</p>
+                resultDiv.classList.add('result-low');
+                htmlContent = `
+                    <h3>✅ Baixo Risco Aparente</h3>
+                    <p>A princípio, os critérios avaliados não apontam sinais críticos de fraude. Mantenha sempre a segurança e a desconfiança saudável em negociações online.</p>
                 `;
             }
 
-            if (alertas.length > 0) {
-                htmlConteudo += `<p><strong>Ameaças detectadas:</strong></p><ul class="lista-alertas">`;
-                alertas.forEach(alerta => {
-                    htmlConteudo += `<li>${alerta}</li>`;
-                });
-                htmlConteudo += `</ul>`;
-            }
-
-            divResultado.innerHTML = htmlConteudo;
-            divResultado.scrollIntoView({ behavior: 'smooth' });
-        }
+            resultDiv.innerHTML = htmlContent;
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
     </script>
 </body>
 </html>
