@@ -4,13 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AgroSeguro - Segurança Digital no Campo</title>
+    
+    <!-- ESTILOS (CSS) -->
     <style>
         :root {
-            --cor-primaria: #2e7d32; /* Verde Agro */
-            --cor-secundaria: #8d6e63; /* Tom de Terra */
+            --cor-primaria: #2e7d32;
+            --cor-secundaria: #8d6e63;
             --cor-fundo: #f4f6f4;
             --cor-card: #ffffff;
             --cor-texto: #333333;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
@@ -75,7 +81,7 @@
             font-size: 15px;
         }
 
-        button.btn-analisar {
+        .btn-analisar {
             width: 100%;
             background-color: var(--cor-primaria);
             color: white;
@@ -89,7 +95,7 @@
             margin-top: 10px;
         }
 
-        button.btn-analisar:hover {
+        .btn-analisar:hover {
             background-color: #1b5e20;
         }
 
@@ -144,7 +150,7 @@
             <p>Assistente de Prevenção a Golpes Digitais no Campo</p>
         </header>
 
-        <form id="formGolpe" onsubmit="analisarRisco(event)">
+        <form id="formGolpe">
             
             <!-- Pergunta 1 -->
             <div class="pergunta-bloco">
@@ -185,7 +191,7 @@
             <button type="submit" class="btn-analisar">Verificar Situação</button>
         </form>
 
-        <!-- Caixa de Resultado -->
+        <!-- Caixa de Resultado Dinâmico -->
         <div id="resultado"></div>
 
         <footer>
@@ -193,43 +199,55 @@
         </footer>
     </div>
 
+    <!-- LÓGICA E COMPORTAMENTO (JavaScript) -->
     <script>
-        function analisarRisco(event) {
-            event.preventDefault(); // Evita que a página recarregue
+        document.getElementById("formGolpe").addEventListener("submit", function(event) {
+            event.preventDefault(); // Impede o recarregamento da página
 
-            // Captura os valores selecionados
-            let p1 = parseInt(document.querySelector('input[name="p1"]:checked').value);
-            let p2 = parseInt(document.querySelector('input[name="p2"]:checked').value);
-            let p3 = parseInt(document.querySelector('input[name="p3"]:checked').value);
-            let p4 = parseInt(document.querySelector('input[name="p4"]:checked').value);
+            // Coleta de dados das respostas
+            const respostas = {
+                p1: parseInt(document.querySelector('input[name="p1"]:checked').value),
+                p2: parseInt(document.querySelector('input[name="p2"]:checked').value),
+                p3: parseInt(document.querySelector('input[name="p3"]:checked').value),
+                p4: parseInt(document.querySelector('input[name="p4"]:checked').value)
+            };
 
+            processarAnalise(respostas);
+        });
+
+        function processarAnalise(respostas) {
             let pontosRisco = 0;
             let alertas = [];
 
-            if (p1 === 1) {
+            // Regras de pontuação e alertas
+            if (respostas.p1 === 1) {
                 pontosRisco += 3;
                 alertas.push("Alerta de Falsos Funcionários / Golpe do Falso Gerente.");
             }
-            if (p2 === 1) {
+            if (respostas.p2 === 1) {
                 pontosRisco += 2;
                 alertas.push("Alerta de Phishing / Falsos Links governamentais ou bancários.");
             }
-            if (p3 === 1) {
+            if (respostas.p3 === 1) {
                 pontosRisco += 3;
                 alertas.push("Alerta de Falsa Loja Agrícola / Golpe de Insumos ou Maquinário.");
             }
-            if (p4 === 1) {
+            if (respostas.p4 === 1) {
                 pontosRisco += 1;
                 alertas.push("Pressão Psicológica (urgência forçada).");
             }
 
-            let divResultado = document.getElementById("resultado");
+            exibirResultado(pontosRisco, alertas);
+        }
+
+        function exibirResultado(pontos, alertas) {
+            const divResultado = document.getElementById("resultado");
             divResultado.style.display = "block";
-            divResultado.className = ""; // Limpa classes anteriores
+            divResultado.className = ""; // Limpa classes de estilo anteriores
 
             let htmlConteudo = "";
 
-            if (pontosRisco >= 4) {
+            if (pontos >= 4) {
                 divResultado.classList.add("alerta-alto");
                 htmlConteudo = `
                     <h3>🚨 [PERIGO ALTO] As chances de ser GOLPE são ALTAS!</h3>
@@ -240,7 +258,7 @@
                         <li>Vá até a agência física da sua cooperativa ou banco para confirmar.</li>
                     </ul>
                 `;
-            } else if (pontosRisco >= 2) {
+            } else if (pontos >= 2) {
                 divResultado.classList.add("alerta-medio");
                 htmlConteudo = `
                     <h3>⚠️ [ATENÇÃO] Há sinais suspeitos nesta situação.</h3>
@@ -267,8 +285,6 @@
             }
 
             divResultado.innerHTML = htmlConteudo;
-            
-            // Rola a página suavemente até o resultado
             divResultado.scrollIntoView({ behavior: 'smooth' });
         }
     </script>
